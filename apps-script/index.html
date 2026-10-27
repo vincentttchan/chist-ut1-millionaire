@@ -121,7 +121,7 @@
         <div class="space-y-4 mb-6 text-left">
           <label for="student-name" class="block text-sm text-gray-300">遊戲暱稱（2–16字，請勿填真名）</label>
           <input maxlength="16" type="text" id="student-name" placeholder="例：歷史小達人" autocomplete="off" class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white">
-          <label class="rank-opt"><input type="checkbox" id="ranked-mode"> 本局參加線上排行榜</label>
+          <label class="rank-opt"><input type="checkbox" id="ranked-mode" checked> 本局參加線上排行榜</label>
           <p id="online-mode-note" class="text-sm text-gray-400"></p>
         </div>
         <button id="start-button" onclick="startGame()" class="millionaire-btn w-full py-3 text-xl font-bold text-yellow-300">開始挑戰</button>
@@ -219,6 +219,7 @@
             updateScope();
             try { document.getElementById('student-name').value = localStorage.getItem('ut1-alias-v2') || ''; } catch (_) {}
             document.getElementById('ranked-mode').disabled = !hasOnlineService();
+            document.getElementById('ranked-mode').checked = hasOnlineService();
             if(canUsePagesBridge())connectPagesBridge().catch(()=>{});
             document.getElementById('online-mode-note').textContent = hasOnlineService()
               ? '勾選後僅傳送暱稱、年級、作答紀錄及用時至老師的 Google Sheets。姓名、班別、學號毋須填寫。'
