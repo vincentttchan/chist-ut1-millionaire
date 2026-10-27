@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-HK"><head><meta charset="utf-8"><title>排行榜連線</title></head><body>
+<script>
+'use strict';
+const BOOT = <?!= bootJson ?>;
+const METHODS = new Set(['startRankedRun','submitRankedRun','getLeaderboard']);
+window.addEventListener('message',event=>{
+  const request=event.data;
+  if(event.source!==window.top || event.origin!==BOOT.origin || !request ||
+     request.channel!==BOOT.channel || request.nonce!==BOOT.nonce || request.type!=='rpc' ||
+     !METHODS.has(request.method) || typeof request.requestId!=='string' ||
+     !/^req-[a-zA-Z0-9-]{1,80}$/.test(request.requestId))return;
+  function reply(ok,value,error) {
+    window.top.postMessage({channel:BOOT.channel,nonce:BOOT.nonce,type:'rpc-result',requestId:request.requestId,ok,value:ok?value:null,error:ok?null:String(error||'排行榜連線失敗。')},BOOT.origin);
+  }
+  google.script.run.withSuccessHandler(value=>reply(true,value,null))
+    .withFailureHandler(error=>reply(false,null,error.message||'排行榜連線失敗。'))[request.method](request.value);
+});
+window.top.postMessage({channel:BOOT.channel,nonce:BOOT.nonce,type:'bridge-ready'},BOOT.origin);
+</script>
+</body></html>
